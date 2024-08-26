@@ -1,0 +1,84 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.env
+venv/
+.venv/
+*.egg
+*.egg-info/
+build/
+*.mo
+*.pot
+*.db
+*.sqlite3
+
+
+# JavaScript/React
+node_modules/
+*.log
+*.eslintcache
+*.nyc_output/
+coverage/
+build/
+*.lock
+*.d.ts
+*.tsbuildinfo
+*.tgz
+*.npmrc
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VSCode
+.vscode/
+.history/
+
+# General
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-workspace
+*.sublime-project
+*.project
+*.classpath
+
+# Logs
+*.log
+*.out
+*.pid
+*.gz
+*.tar
+*.zip
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*.tmp
+*.orig
+*.rej
+
+# Environment
+.env
+*.env

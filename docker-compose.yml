@@ -1,0 +1,71 @@
+version: '3'
+volumes:
+  pgdata:
+  dynamodb_data:
+
+networks:
+  app_network:
+    driver: bridge
+
+services:
+  python:
+    build:
+      context: .
+      dockerfile: docker/back/Dockerfile
+    volumes:
+      - ./back:/code
+    ports:
+      - 8001:8001
+    command: "uvicorn main:app --host 0.0.0.0 --port 8001"
+    networks:
+      - app_network
+
+  front:
+    container_name: front
+    build:
+      context: .
+      dockerfile: docker/front/Dockerfile
+    command: ["npx", "http-server", "dist", "-p", "3000"]
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./tsl_certs/certbot/conf:/etc/letsencrypt
+      - ./tsl_certs/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - front
+      - python
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - app_network
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./tsl_certs/certbot/conf:/etc/letsencrypt
+      - ./tsl_certs/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - app_network
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb-local
+    ports:
+      - 8000:8000
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+    environment:
+      - DYNAMODB_LOCAL_PORT=8000
+    networks:
+      - app_network
